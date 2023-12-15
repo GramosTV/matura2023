@@ -25,6 +25,8 @@
 #to lecimy
 
 # 2023 zad 2 wszystkie oprocz 2.4
+from datetime import datetime
+from datetime import time
 def binaryBlockSum(n: int):
     arr = [*bin(n)[2:]]
     currentValue = ''
@@ -154,20 +156,93 @@ def baseToDecimal():
     print(decimal_number)
 
 #6
+
 def jam():
     file = open('owoce.txt', 'r').readlines()[1:]
     arr = []
-
+    dates = []
     for x in file:
         formatted = x.split('\t')
         obj = {
             "date": formatted[0],
-            "raspberries": formatted[1],
-            "strawberries": formatted[2],
-            "currants": formatted[3].split('\n')[0]
+            "raspberries": int(formatted[1]),
+            "strawberries": int(formatted[2]),
+            "currants": int(formatted[3].split('\n')[0])
         }
+        
         arr.append(obj)
+    for x in arr:
+        if x['currants'] > x['strawberries'] and x['currants'] > x['raspberries']:
+            dates.append(x['date'])
+    print(len(dates))
 
-    
-    print(arr)
-jam()
+def jamWithinDates():
+    file = open('owoce.txt', 'r').readlines()[1:]
+    arr = []
+    currants = 0
+    strawberries = 0
+    raspberries = 0
+    for x in file:
+        formatted = x.split('\t')
+        obj = {
+            "date": datetime.strptime(formatted[0], "%d-%m-%Y"),
+            "raspberries": int(formatted[1]),
+            "strawberries": int(formatted[2]),
+            "currants": int(formatted[3].split('\n')[0])
+        }
+        
+        arr.append(obj)
+    yesterdaysRaspberries = 0
+    yesterdaysStrawberries = 0
+    yesterdaysCurrants = 0
+    rs = 0
+    rc = 0
+    sc = 0
+    rsKg = 0
+    rcKg = 0
+    scKg = 0
+    for x in arr:
+        if (x['date'] >= datetime.strptime("2020-05-01", "%Y-%m-%d") and x['date'] <= datetime.strptime("2020-09-30", "%Y-%m-%d")):
+            clone = x.copy()
+            clone.pop('date')
+            clone['raspberries'] += yesterdaysRaspberries
+            clone['strawberries'] += yesterdaysStrawberries
+            clone['currants'] += yesterdaysCurrants
+            yesterdaysRaspberries = 0
+            yesterdaysStrawberries = 0
+            yesterdaysCurrants = 0
+            sort = sorted(clone, key=clone.get)
+            print(clone['raspberries'], clone['strawberries'], clone['currants'])
+            if ((sort[2] == 'raspberries' and sort[1] == 'strawberries') or (sort[2] =='strawberries' and sort[1] == 'raspberries')):
+                rs += 1
+                yesterdaysCurrants += clone['currants']
+
+                if sort[2] == 'raspberries':
+                    yesterdaysRaspberries += clone['raspberries'] - clone['strawberries']
+                    rsKg += clone['strawberries']
+                elif sort[2] =='strawberries':
+                    yesterdaysStrawberries += clone['strawberries'] - clone['raspberries']
+                    rsKg += clone['raspberries']
+            elif ((sort[2] == 'raspberries' and sort[1] == 'currants') or (sort[2] == 'currants' and sort[1] == 'raspberries')):
+                rc += 1
+                yesterdaysStrawberries += clone['strawberries']
+
+                if sort[2] == 'raspberries':
+                    yesterdaysRaspberries += clone['raspberries'] - clone['currants']
+                    rcKg += clone['currants']
+                elif sort[2] =='currants':
+                    yesterdaysCurrants += clone['currants'] - clone['raspberries']
+                    rcKg += clone['raspberries']
+
+            elif ((sort[2] =='strawberries' and sort[1] == 'currants') or (sort[2] == 'currants' and sort[1] =='strawberries')):
+                sc += 1
+                yesterdaysRaspberries += clone['raspberries']
+
+                if sort[2] == 'strawberries':
+                    yesterdaysStrawberries += clone['strawberries'] - clone['currants']
+                    scKg += clone['currants']
+                elif sort[2] =='currants':
+                    yesterdaysCurrants += clone['currants'] - clone['strawberries']
+                    scKg += clone['strawberries']
+    print(rsKg, rcKg, scKg)        
+jamWithinDates()
