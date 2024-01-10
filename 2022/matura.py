@@ -28,15 +28,28 @@ def myFn(s: str):
     else: return False
 
 
-check = False
-while check == False:
-    s = ''
-    for x in range(10):
-        res = random.randint(0,1)
-        if res == 0: s += 'a'
-        else: s += 'b'
+# check = False
+# while check == False:
+#     s = ''
+#     for x in range(10):
+#         res = random.randint(0,1)
+#         if res == 0: s += 'a'
+#         else: s += 'b'
+#     print(s)
+#     if myFn(s):
+#         check = True
+    
+def algo(n: int):
+    s = 0
+    for x in range(1, n):
+        for x in range(1, n):
+            s = s + 1
     print(s)
-    if myFn(s):
-        check = True
+
+print(int('132', 4) + int('3111', 4))
+print(int('1111011', 2))
+print(int('362', 8))
+print(15*16+3)
+print(int('3303', 4))
     
 
